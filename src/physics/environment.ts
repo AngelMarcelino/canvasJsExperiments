@@ -4,10 +4,12 @@ import { EnvironmentElement } from './environment-element';
 
 export class Environment {
     private _isRunning = false;
-    private speedFrameFix = 1 / 60;
-    private gravity = 9.81;
+    static speedFrameFix = 1 / 60;
+    private speedFrameFix = Environment.speedFrameFix;
+    private gravity = 9.81 * 4;
     private elements: EnvironmentElement[] = [];
     private floor: EnvironmentElement;
+    public willHaveGravity = true;
     constructor(private renderer: Renderer) {
         
     }
@@ -65,7 +67,7 @@ export class Environment {
             first.topRight().x > second.topLeft().x &&
             first.bottomLeft().y > second.topLeft().y &&
             second.topRight().x > first.topLeft().x &&
-            second.bottomLeft().y > first.topLeft().y
+            second.bottomLeft().y > first.topLeft().y 
         ) {
             if (first.bottomLeft().y > second.topLeft().y) {
                 if (first.dY > 0) {
@@ -86,9 +88,11 @@ export class Environment {
         this.elements.forEach(element => {
             element.x += element.dX;
             element.y += element.dY;
-            if (element.affectedByGravity) {
-                element.dY += this.gravity * this.speedFrameFix;
-                element.isInFloor = element.y + element.height === this.floor.y;
+            if (this.willHaveGravity) {
+                if (element.affectedByGravity) {
+                    element.dY += this.gravity * this.speedFrameFix;
+                    element.isInFloor = element.y + element.height > this.floor.y;
+                }
             }
         });
     }

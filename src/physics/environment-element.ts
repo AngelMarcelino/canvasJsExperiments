@@ -3,6 +3,7 @@ import { Renderable } from './renderable';
 
 export class EnvironmentElement implements Renderable {
     
+    willFill = false;
     width: number;
     height: number;
     x: number;
@@ -11,6 +12,7 @@ export class EnvironmentElement implements Renderable {
     dY: number;
     isInFloor: boolean;
     affectedByGravity: boolean = true;
+
 
     topLeft() {
         return new Point(this.x, this.y);
@@ -27,6 +29,5 @@ export class EnvironmentElement implements Renderable {
     }
 
     render(context: CanvasRenderingContext2D): void {
-        
     }
 }

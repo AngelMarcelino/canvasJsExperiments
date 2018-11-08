@@ -1,34 +1,37 @@
 import { Environment } from './physics/environment';
 import { Rectangle } from './sprites/rectangle';
 import { Renderer } from './physics/renderer';
+import { Circle, constructCircle } from './sprites/circle';
+import { Point } from './physics/point';
+import { constructSelfMovingCircle } from './sprites/self-moving-circle';
+import { constructLine } from './sprites/vertical-line';
+import { constructSelfMovingCircleWithLine } from './sprites/self-moving-with-line';
+import { Orientations } from './physics/orientations';
 
 const canvas = <HTMLCanvasElement> document.getElementById('main-canvas');
 const environment = new Environment(new Renderer(canvas));
+environment.willHaveGravity = false;
 
-const main = contructRectangle(2, -300);
-const floor = contructRectangle(0, canvas.clientHeight-1, canvas.clientWidth, 10, false);
 
-environment.addElement(main);
-environment.addElement(contructRectangle(200, 100));
-environment.addElement(contructRectangle(2300, 200));
-environment.addFloor(floor);
+const rows = 4;
+const cols = rows;
 
- 
- 
-environment.isRunning = true;
-
-const stopButton = document.getElementById('stop-button');
-stopButton.addEventListener('click', () => {
-    //environment.isRunning = false;
-    main.excecute(null);
-})
-
-function contructRectangle(x: number, y: number, width: number = 50, height: number = 50, affectedByGravity: boolean = true): Rectangle {
-    const result = new Rectangle();
-    result.x = x;
-    result.y = y;
-    result.width = width;
-    result.height = height;
-    result.affectedByGravity = affectedByGravity
-    return result;
+const cellWidth = canvas.clientWidth / cols;
+const cellHeight = canvas.clientHeight / rows;
+let i = 0;
+let j = cellWidth / 2;
+let speed = 1;
+for (  i = cellWidth * 3 / 2; i <= canvas.clientHeight; i += cellHeight) {
+    environment.addElement(constructCircle(i, j, cellWidth / 2));
+    environment.addElement(constructSelfMovingCircleWithLine(new Point(i, j), cellWidth / 2, 5, speed, Orientations.vertical))
+    speed ++;
 }
+speed = 1;
+i = cellWidth / 2;
+for ( j = cellWidth * 3 / 2; j <= canvas.clientWidth; j += cellWidth) {
+    environment.addElement(constructCircle(i, j, cellWidth / 2));
+    environment.addElement(constructSelfMovingCircleWithLine(new Point(i, j), cellWidth / 2, 5, speed, Orientations.horizontal))
+    speed ++;
+}
+
+environment.isRunning = true;
