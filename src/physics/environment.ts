@@ -1,15 +1,18 @@
 import { Renderable } from './renderable';
 import { Renderer } from './renderer';
 import { EnvironmentElement } from './environment-element';
+import { Line } from '../sprites/vertical-line';
+import { SelfMovingWithLine } from '../sprites/self-moving-with-line';
 
 export class Environment {
     private _isRunning = false;
     static speedFrameFix = 1 / 60;
     private speedFrameFix = Environment.speedFrameFix;
     private gravity = 9.81 * 4;
-    private elements: EnvironmentElement[] = [];
+    public elements: EnvironmentElement[] = [];
     private floor: EnvironmentElement;
     public willHaveGravity = true;
+    private middleware: ((Environment) => void)[] = [];
     constructor(private renderer: Renderer) {
         
     }
@@ -33,6 +36,10 @@ export class Environment {
         this.floor = floor;
     }
 
+    addMiddleware(middlewareFunc: (Environment) => void) {
+        this.middleware.push(middlewareFunc);
+    }
+
     setNullSpeed(renderable: EnvironmentElement) {
         renderable.dX = 0;
         renderable.dY = 0;
@@ -45,6 +52,9 @@ export class Environment {
     mainLoop() {
         this.checkEvents();
         this.calculateNextState();
+        this.middleware.forEach(element => {
+            element(this);
+        });
         this.renderer.render();
         if (this.isRunning) {
             requestAnimationFrame(this.mainLoop.bind(this));
@@ -84,7 +94,9 @@ export class Environment {
         });
     }
 
+    count = 0;
     update() {
+        this.count ++;
         this.elements.forEach(element => {
             element.x += element.dX;
             element.y += element.dY;

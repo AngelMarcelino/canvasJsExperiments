@@ -27,7 +27,7 @@ export class Rectangle extends EnvironmentElement {
     }
 }
 
-function contructRectangle(x: number, y: number, width: number = 50, height: number = 50, affectedByGravity: boolean = true): Rectangle {
+export function contructRectangle(x: number, y: number, width: number = 50, height: number = 50, affectedByGravity: boolean = true): Rectangle {
     const result = new Rectangle();
     result.x = x;
     result.y = y;

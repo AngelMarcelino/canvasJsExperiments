@@ -6,8 +6,8 @@ import { Line } from "./vertical-line";
 
 export class SelfMovingWithLine extends SelfMovingCircle{
     line: Line;
-    constructor(axis: Point, orbitRadius: number, speed: number, public orientation: Orientations) {
-        super(axis, orbitRadius, speed);
+    constructor(axis: Point, orbitRadius: number, speed: number, public orientation: Orientations, clockwise: boolean) {
+        super(axis, orbitRadius, speed, clockwise);
         this.setLine(orientation);
     }
     setLine(orientation: Orientations) {
@@ -24,8 +24,8 @@ export class SelfMovingWithLine extends SelfMovingCircle{
     }
 }
 
-export function constructSelfMovingCircleWithLine(axis: Point, orbitRadius: number , radius: number = 50, speed: number = 1, orientation: Orientations) {
-    const result = new SelfMovingWithLine(axis, orbitRadius, speed, orientation);
+export function constructSelfMovingCircleWithLine(axis: Point, orbitRadius: number , radius: number = 50, speed: number = 1, clockwise: boolean = true,  orientation: Orientations) {
+    const result = new SelfMovingWithLine(axis, orbitRadius, speed, orientation, clockwise);
     result.x = axis.x + orbitRadius;
     result.y = axis.y;
     result.width = radius;
