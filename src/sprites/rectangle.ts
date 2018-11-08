@@ -2,8 +2,9 @@ import { Renderable } from "../physics/renderable";
 import { EnvironmentElement } from "../physics/environment-element";
 import { ActionExcecuter, ActionType } from "../physics/action-excecuter";
 import { Jumper } from "../physics/jumper";
+import { Point } from "../physics/point";
 
-export class Pendulo extends EnvironmentElement {
+export class Rectangle extends EnvironmentElement {
     actionList: ActionExcecuter[] = [];
     constructor() {
         super();
@@ -17,6 +18,8 @@ export class Pendulo extends EnvironmentElement {
             });
         }
     }
+
+    
     
     render(context: CanvasRenderingContext2D) {
         context.beginPath();

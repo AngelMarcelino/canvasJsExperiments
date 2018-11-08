@@ -7,6 +7,7 @@ export class Environment {
     private speedFrameFix = 1 / 60;
     private gravity = 9.81;
     private elements: EnvironmentElement[] = [];
+    private floor: EnvironmentElement;
     constructor(private renderer: Renderer) {
         
     }
@@ -24,6 +25,10 @@ export class Environment {
         this.setNullSpeed(renderable);
         this.renderer.addRenderizable(renderable);
         this.elements.push(renderable);
+    }
+    addFloor(floor: EnvironmentElement) {
+        this.addElement(floor);
+        this.floor = floor;
     }
 
     setNullSpeed(renderable: EnvironmentElement) {
@@ -51,13 +56,29 @@ export class Environment {
 
     checkCollitions() {
         this.elements.forEach(element => {
-            if (element.y + element.height + element.dY >= this.renderer.height) {
-                element.y = this.renderer.height - element.height;
-                element.dY = 0;
+            this.checkCollitionsWithOtherElements(element);
+        });
+    }
+
+    checkCollitionWithFrame(first: EnvironmentElement, second: EnvironmentElement) {
+        if (
+            first.topRight().x > second.topLeft().x &&
+            first.bottomLeft().y > second.topLeft().y &&
+            second.topRight().x > first.topLeft().x &&
+            second.bottomLeft().y > first.topLeft().y
+        ) {
+            if (first.bottomLeft().y > second.topLeft().y) {
+                if (first.dY > 0) {
+                    first.dY = 0
+                }
             }
-            if (element.x + element.width >= this.renderer.width) {
-                element.dX = 0;
-            }
+        }
+    }
+
+    checkCollitionsWithOtherElements(currentElement: EnvironmentElement) {
+        const elementsButCurrentElement = this.elements.filter(e => e != currentElement);
+        elementsButCurrentElement.forEach(element => {
+            this.checkCollitionWithFrame(currentElement, element);
         });
     }
 
@@ -65,8 +86,10 @@ export class Environment {
         this.elements.forEach(element => {
             element.x += element.dX;
             element.y += element.dY;
-            element.dY += this.gravity * this.speedFrameFix;
-            element.isInFloor = element.y + element.height === this.renderer.height;
+            if (element.affectedByGravity) {
+                element.dY += this.gravity * this.speedFrameFix;
+                element.isInFloor = element.y + element.height === this.floor.y;
+            }
         });
     }
 }

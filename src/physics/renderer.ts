@@ -1,6 +1,8 @@
 import { Renderable } from './renderable';
 
 export class Renderer {
+    public x: number = 0;
+    public y: number = 0;
     public width: number;
     public height: number;
     private context: CanvasRenderingContext2D;

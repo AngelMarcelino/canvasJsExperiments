@@ -1,4 +1,5 @@
 export class Point {
-    x: number;
-    y: number;
+    constructor(public x: number = undefined, public y: number = undefined) {
+        
+    }
 }
