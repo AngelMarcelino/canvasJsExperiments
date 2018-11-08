@@ -4,7 +4,15 @@ import { ActionExcecuter, ActionType } from "../physics/action-excecuter";
 import { Jumper } from "../physics/jumper";
 import { Point } from "../physics/point";
 
-export class Rectangle extends EnvironmentElement {
+export class Circle extends EnvironmentElement {
+    private _width: number;
+    set width(value: number) {
+        this._width = value;
+        this.height = value;
+    }
+    get width(): number {
+        return this._width;
+    }
     actionList: ActionExcecuter[] = [];
     constructor() {
         super();
@@ -23,17 +31,19 @@ export class Rectangle extends EnvironmentElement {
     
     render(context: CanvasRenderingContext2D) {
         context.beginPath();
-        context.fillRect(this.x, this.y, this.width, this.height);
+        context.arc(this.x, this.y, this.width, 0, 2 * Math.PI);
+        if ( this.willFill) {
+            context.fill();
+        } else {
+            context.stroke();
+        }
     }
 }
 
-export function contructRectangle(x: number, y: number, width: number = 50, height: number = 50, affectedByGravity: boolean = true): Rectangle {
-    const result = new Rectangle();
+export function constructCircle(x: number = 0, y: number = 0, radius: number = 50) {
+    const result = new Circle();
     result.x = x;
     result.y = y;
-    result.width = width;
-    result.height = height;
-    result.affectedByGravity = affectedByGravity
+    result.width = radius;
     return result;
 }
-
